@@ -1,0 +1,34 @@
+version: '3'
+services:
+  event-service:
+    build: ./event-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+
+  ticket-service:
+    build: ./ticket-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "3004:3004"
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
