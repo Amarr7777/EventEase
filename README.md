@@ -23,16 +23,17 @@ EventEase is structured with the following microservices:
    - Manages event creation, retrieval, updating, and deletion.
    - Endpoints: `GET /event/events`, `POST /event/events`, `PUT /event/events/:id`, `DELETE /event/events/:id`
 
-3. **Usage**
+## Usage
    - Registration: Users can register with their name, email, and password.
    - Login: Registered users can log in using their email and password.
    - Event Management: Users can create, view, and manage events once logged in.
-   - API Endpoints
 
-4. **Authentication**
+## API Endpoints
+
+1. **Authentication**
    - POST /auth/register: Register a new user
    - POST /auth/login: Authenticate a user and return a token
-5. **Events**
+2. **Events**
    - GET /event/events: Retrieve all events
    - POST /event/events: Create a new event
    - PUT /event/events/:id: Update an event
