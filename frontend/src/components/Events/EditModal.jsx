@@ -38,7 +38,7 @@ function EditModal({ setShowEditModal, onEdit, eventToEdit }) {
         date: eventDate,
       };
 
-      const response = await axios.put(`http://localhost:3001/event/events/${eventToEdit._id}`, updatedEvent);
+      const response = await axios.put(`http://localhost:8000/events/event/events/${eventToEdit._id}`, updatedEvent);
 
       if (response.status >= 200 && response.status < 300) {
         setSuccess("Event updated successfully");

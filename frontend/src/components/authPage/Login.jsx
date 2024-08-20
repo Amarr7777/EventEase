@@ -38,7 +38,7 @@ function Login({ setLogin }) {
     }
 
     try {
-      const response = await axios.post("http://localhost:3002/auth/login", {
+      const response = await axios.post("http://localhost:8000/users/auth/login", {
         email,
         password,
       });
@@ -49,6 +49,7 @@ function Login({ setLogin }) {
         navigate('/dashboard');
       }
     } catch (err) {
+      console.log(err)
       setError("Login failed. Please check your credentials.");
       setErrTextStyle("text-red-500");
       setErrInputStyle("border border-red-500");

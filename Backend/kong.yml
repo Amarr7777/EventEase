@@ -1,0 +1,15 @@
+_format_version: "2.1"
+services:
+  - name: event-service
+    url: http://event-service:3001
+    routes:
+      - name: event-route
+        paths:
+          - /events
+
+  - name: user-service
+    url: http://user-service:3002
+    routes:
+      - name: user-route
+        paths:
+          - /users

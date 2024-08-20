@@ -1,21 +1,32 @@
-import React from "react";
-import axios from "axios"
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-function EventCard({ event,onDelete, setShowEditModal, onEdit }) {
+function EventCard({ event, onDelete, onEdit }) {
+  const [user, setUser] = useState(null);
   const date = new Date(event.date);
 
-  // Extract year, month, and day
-  const year = date.getFullYear();
-  const month = date.toLocaleString("default", { month: "short" }); // "Sep" for September
-  const day = date.getDate();
+  async function fetchUser() {
+    console.log(event._id)
+    try {
+      const response = await axios.get(`http://localhost:8000/events/event/events/${event._id}`);
+      console.log("Event",response.data.user.name)
+      setUser(response.data.user);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUser();
+  }, [event._id]);
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this event?')) {
       try {
-        const response = await axios.delete(`http://localhost:3001/event/events/${event._id}`);
+        const response = await axios.delete(`http://localhost:8000/events/event/events/${event._id}`);
 
         if (response.status >= 200 && response.status < 300) {
-          if (onDelete) onDelete(event._id); // Notify parent to remove event from state
+          if (onDelete) onDelete(event._id);
         } else {
           alert('Failed to delete event');
         }
@@ -30,12 +41,12 @@ function EventCard({ event,onDelete, setShowEditModal, onEdit }) {
     <article className="flex bg-white transition shadow-xl rounded-lg hover:shadow-2xl">
       <div className="rotate-180 p-2 [writing-mode:_vertical-lr]">
         <time
-          datetime={`${year}-${date.getMonth() + 1}-${day}`}
+          datetime={`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`}
           className="flex items-center justify-between gap-4 text-xs font-bold uppercase text-gray-900"
         >
-          <span>{year}</span>
+          <span>{date.getFullYear()}</span>
           <span className="w-px flex-1 bg-gray-900/10"></span>
-          <span>{`${month} ${day}`}</span>
+          <span>{`${date.toLocaleString("default", { month: "short" })} ${date.getDate()}`}</span>
         </time>
       </div>
 
@@ -49,7 +60,7 @@ function EventCard({ event,onDelete, setShowEditModal, onEdit }) {
 
       <div className="flex flex-1 flex-col justify-between">
         <div className="border-s border-gray-900/10 p-4 sm:border-l-transparent sm:p-6">
-          <a href="#">
+          <a >
             <h3 className="font-bold uppercase text-gray-900">{event.name}</h3>
           </a>
 
@@ -61,21 +72,20 @@ function EventCard({ event,onDelete, setShowEditModal, onEdit }) {
         <div className="sm:flex sm:items-end sm:justify-end">
           <div className="flex justify-center items-center gap-2">
             <button 
-            onClick={handleDelete}
-            className="py-2 px-5  hover:text-blue-950 hover:scale-105 bg-transparent rounded-md text-blue-700 ">
+              onClick={handleDelete}
+              className="py-2 px-5 hover:text-blue-950 hover:scale-105 bg-transparent rounded-md text-blue-700">
               Delete
             </button>
             <button 
-            onClick={()=>{onEdit()}}
-            className="py-2 px-5  hover:text-blue-950 hover:scale-105 bg-transparent rounded-md text-blue-700 ">
+              onClick={() => onEdit(event)}
+              className="py-2 px-5 hover:text-blue-950 hover:scale-105 bg-transparent rounded-md text-blue-700">
               Edit
             </button>
           </div>
           <a
-            href="#"
             className="block bg-yellow-300 px-5 py-3 text-center text-xs font-bold uppercase text-gray-900 transition hover:bg-yellow-400 rounded-br-lg"
           >
-            Amar G Nath
+            {user ? user.name : 'Loading...'}
           </a>
         </div>
       </div>

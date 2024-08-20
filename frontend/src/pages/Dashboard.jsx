@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
   const [events, setEvents] = useState([]);
+  const [user, setUser] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null); // Added state to hold selected event for editing
@@ -18,11 +19,25 @@ function Dashboard() {
   // Fetch events from the backend
   const fetchEvents = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/event/events');
+      const response = await axios.get('http://localhost:8000/events/event/events');
       setEvents(response.data);
       setEventsFetched(true);
     } catch (error) {
       console.error('Error fetching events:', error);
+    }
+  };
+
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await axios.get('http://localhost:8000/users/users/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
     }
   };
  
@@ -32,6 +47,7 @@ function Dashboard() {
       navigate('/'); // Redirect to login if not authenticated
     }
     if (!eventsFetched) {
+      fetchUser()
       fetchEvents();
     }
   }, []); 
@@ -43,7 +59,7 @@ function Dashboard() {
 
   return (
     <div>
-      {showModal && <EventModal setShowModal={setShowModal} onAdd={fetchEvents} />}
+      {showModal && <EventModal user={user} setShowModal={setShowModal} onAdd={fetchEvents} />}
       {showEditModal && (
         <EditModal
           setShowEditModal={setShowEditModal}

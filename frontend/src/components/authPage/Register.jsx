@@ -26,7 +26,7 @@ function Register({ setLogin }) {
     }
 
     try {
-      const response = await axios.post('http://localhost:3002/auth/register', {
+      const response = await axios.post('http://localhost:8000/users/auth/register', {
         name,
         email,
         password,

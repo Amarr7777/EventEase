@@ -6,6 +6,11 @@ services:
       - "3001:3001"
     depends_on:
       - mongodb
+      - user-service
+      - rabbitmq
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/event-service
+      - RABBITMQ_URI=amqp://rabbitmq:5672
 
   user-service:
     build: ./user-service
@@ -13,18 +18,10 @@ services:
       - "3002:3002"
     depends_on:
       - mongodb
-
-  ticket-service:
-    build: ./ticket-service
-    ports:
-      - "3003:3003"
-    depends_on:
-      - mongodb
-
-  notification-service:
-    build: ./notification-service
-    ports:
-      - "3004:3004"
+      - rabbitmq
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/user-service
+      - RABBITMQ_URI=amqp://rabbitmq:5672
 
   mongodb:
     image: mongo
@@ -32,3 +29,25 @@ services:
       - "27017:27017"
     volumes:
       - ./data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"  # RabbitMQ Management UI
+
+  kong:
+    image: kong:latest
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: "/usr/local/kong/declarative/kong.yml"
+    volumes:
+      - ./kong.yml:/usr/local/kong/declarative/kong.yml
+    ports:
+      - "8000:8000"   # Public access to your services
+      - "8443:8443"   # Secure public access to your services
+      - "8001:8001"   # Kong Admin API (non-SSL)
+      - "8444:8444"   # Kong Admin API (SSL)
+    depends_on:
+      - event-service
+      - user-service
