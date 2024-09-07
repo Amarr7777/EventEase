@@ -2,6 +2,10 @@
 
 EventEase is a comprehensive event management application that provides user authentication and event management features. Built with React on the frontend and Node.js with Express on the backend, it utilizes JWT for secure authentication. The application is designed to be scalable and follows a microservices architecture for flexibility and maintainability.
 
+In this architecture, RabbitMQ is used as a message broker to facilitate communication between the User Service and the Event Service. RabbitMQ ensures reliable, asynchronous message passing between services, enabling them to operate independently and handle tasks like user registration, event creation, and notifications without being tightly coupled. This setup improves the scalability of the system and allows for future integration of additional services with minimal changes to the core architecture.
+
+This version highlights RabbitMQ’s role in maintaining efficient communication between microservices, ensuring the system remains flexible and scalable.
+
 ## Features
 
 - User Registration
